@@ -1,11 +1,14 @@
-require "PolyTreeNode"
+require_relative "lib/00_tree_node.rb"
 
 class KnightPathFinder
+  attr_reader :move_tree
+
   def initialize(pos)
     @visited_positions = [pos]
+    @move_tree= build_move_tree
   end
 
-  def self.valid_moves(pos)
+  def valid_moves(pos)
     all_moves = [[1, 2], [-1, 2], [1, -2], [-1, -2], [2, 1], [-2, 1],
                   [2, -1], [-2, -1]]
     squares = all_moves.map { |move| [(pos[0] + move[0]), (pos[1] + move[1])] }
@@ -35,9 +38,25 @@ class KnightPathFinder
       end
     end
     root
+  end
+
+  def find_path(pos)
+    end_pos = @move_tree.dfs(pos)
+    trace_path_back(end_pos)
+  end
+
+  def trace_path_back(end_pos)
+    path = [end_pos]
+    until path.first.parent.nil?
+      path.unshift(path.first.parent)
+    end
+    path
+    path.map(&:value)
 
   end
 
-
-
 end
+
+k = KnightPathFinder.new([0,0])
+k.move_tree.children.length
+p k.find_path([6,2])
